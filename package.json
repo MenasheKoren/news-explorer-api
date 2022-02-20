@@ -49,7 +49,7 @@
     "dev": "nodemon server.js",
     "lint": "npx eslint .",
     "lint:fix": "npx eslint . --fix",
-    "start": "node app.js"
+    "start": "node server.js"
   },
   "version": "1.0.0"
 }
