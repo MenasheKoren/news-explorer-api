@@ -5,7 +5,7 @@ const { getUsers, getCurrentUser } = require('../controllers/users');
 // # returns information about the logged-in user (email and name)
 // GET / users / me;
 
-router.get('/', getUsers);
-router.get('/me', getCurrentUser);
+router.get('/', auth, getUsers);
+router.get('/me', auth, getCurrentUser);
 
 module.exports = router;

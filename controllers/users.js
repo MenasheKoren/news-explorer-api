@@ -44,18 +44,18 @@ module.exports.getUserById = (req, res) => {
 };
 
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar, email, password } = req.body;
+  const { name, email, password } = req.body;
   bcrypt.hash(password, 10).then((hash) =>
     User.create({
       name,
-      about,
-      avatar,
       email,
       password: hash,
     })
 
       .then((user) =>
-        res.status(200).send({ _id: user._id, email: user.email }),
+        res
+          .status(200)
+          .send({ _id: user._id, name: user.name, email: user.email }),
       )
       .catch((err) => {
         catchCreateErrorHandler(err, res, userDataErrorHandlerSelector);

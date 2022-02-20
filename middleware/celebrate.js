@@ -11,6 +11,7 @@ const validateURL = (value, helpers) => {
 module.exports.celebrateCreateUser = celebrate({
   body: Joi.object()
     .keys({
+      name: Joi.string().required().min(2).max(30),
       email: Joi.string().required().email(),
       password: Joi.string().required().min(8),
     })
@@ -26,17 +27,22 @@ module.exports.celebrateLogin = celebrate({
     .unknown(true),
 });
 
-module.exports.celebrateCreateCard = celebrate({
+module.exports.celebrateCreateArticle = celebrate({
   body: Joi.object()
     .keys({
-      name: Joi.string().required().min(2).max(30),
+      keyword: Joi.string().required(),
+      title: Joi.string().required(),
+      text: Joi.string().required(),
+      date: Joi.date(),
+      source: Joi.string().required(),
       link: Joi.string().required().custom(validateURL),
+      image: Joi.string().required().custom(validateURL),
       owner: Joi.object().ref('user'),
     })
     .unknown(true),
 });
 
-module.exports.celebrateDeleteCardById = celebrate({
+module.exports.celebrateDeleteArticleById = celebrate({
   params: Joi.object()
     .keys({
       cardId: Joi.string().hex().length(24),
