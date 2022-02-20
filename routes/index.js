@@ -20,7 +20,4 @@ router.post('/signin', celebrateLogin, login);
 router.use('/users', users);
 router.use('/articles', articles);
 
-router.get('/test', (req, res) => {
-  res.status(200).send('Hello World!');
-});
 module.exports = router;
