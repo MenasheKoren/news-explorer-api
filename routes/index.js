@@ -9,11 +9,6 @@ const {
 
 const router = express.Router();
 
-// middleware that is specific to this router
-// router.use((req, res, next) => {
-//   next();
-// });
-
 router.post('/signup', celebrateCreateUser, createUser);
 router.post('/signin', celebrateLogin, login);
 

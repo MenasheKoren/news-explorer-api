@@ -13,27 +13,19 @@ function invalidDataPassedErrorHandler(
 
 const userDataErrorHandlerSelector = 'User';
 const emailDataErrorHandlerSelector = 'Email';
-const userProfileDataErrorHandlerSelector = 'User profile';
-const userAvatarDataErrorHandlerSelector = 'User avatar';
 
-const cardDataErrorHandlerSelector = 'Card';
+const articleDataErrorHandlerSelector = 'Article';
 
 const createActionFailSelector = 'created';
 const updateActionFailSelector = 'updated';
 const deleteActionFailSelector = 'deleted';
-const likeActionFailSelector = 'liked';
-const dislikeActionFailSelector = 'disliked';
 
 module.exports = {
   invalidDataPassedErrorHandler,
   userDataErrorHandlerSelector,
   emailDataErrorHandlerSelector,
-  cardDataErrorHandlerSelector,
+  articleDataErrorHandlerSelector,
   createActionFailSelector,
   updateActionFailSelector,
   deleteActionFailSelector,
-  likeActionFailSelector,
-  dislikeActionFailSelector,
-  userProfileDataErrorHandlerSelector,
-  userAvatarDataErrorHandlerSelector,
 };
