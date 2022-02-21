@@ -1,10 +1,16 @@
-// models/user.js
 require('dotenv').config();
 const mongoose = require('mongoose');
 const validator = require('validator');
 const bcrypt = require('bcryptjs');
 
 const userSchema = new mongoose.Schema({
+  name: {
+    type: String,
+    default: 'Mithrandir',
+    minLength: [2, 'needs at least 2 letters'],
+    maxLength: [30, 'cannot be longer than 30 letters'],
+    required: true,
+  },
   email: {
     type: String,
     unique: true,
@@ -19,12 +25,6 @@ const userSchema = new mongoose.Schema({
     required: true,
     select: false,
     minLength: [8, 'needs at least 8 characters'],
-  },
-  name: {
-    type: String,
-    default: 'Jacques Cousteau',
-    minLength: [2, 'needs at least 2 letters'],
-    maxLength: [30, 'cannot be longer than 30 letters'],
   },
 });
 
