@@ -18,15 +18,15 @@ const getUsersErrorHandlerSelector = 'users';
 const getCurrentUserErrorHandlerSelector = 'user';
 const getUserByIdErrorHandlerSelector = 'user with that Id';
 
-const getCardsErrorHandlerSelector = 'cards';
-const getCardByIdErrorHandlerSelector = 'card with that Id';
+const getArticlesErrorHandlerSelector = 'articles';
+const getArticleByIdErrorHandlerSelector = 'article with that Id';
 
 module.exports = {
   documentNotFoundErrorHandler,
   pageNotFoundErrorHandler,
   getUsersErrorHandlerSelector,
   getUserByIdErrorHandlerSelector,
-  getCardByIdErrorHandlerSelector,
-  getCardsErrorHandlerSelector,
+  getArticleByIdErrorHandlerSelector,
+  getArticlesErrorHandlerSelector,
   getCurrentUserErrorHandlerSelector,
 };

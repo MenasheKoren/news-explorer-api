@@ -10,7 +10,7 @@ const {
   celebrateDeleteArticleById,
 } = require('../middleware/celebrate');
 
-router.get('/', getArticles);
+router.get('/', auth, getArticles);
 router.post('/', auth, celebrateCreateArticle, createArticle);
 router.delete(
   '/:articleId',
