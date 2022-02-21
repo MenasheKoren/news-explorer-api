@@ -1,4 +1,3 @@
-// models/user.js
 require('dotenv').config();
 const mongoose = require('mongoose');
 const validator = require('validator');

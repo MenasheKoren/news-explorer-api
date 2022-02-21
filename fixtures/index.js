@@ -1,5 +1,3 @@
-// fixtures/index.js
-
 module.exports = {
   user: {
     email: 'h235@gmail.com',
