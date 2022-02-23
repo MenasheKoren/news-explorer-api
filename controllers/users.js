@@ -2,48 +2,26 @@ require('dotenv').config();
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const User = require('../models/user');
-
-const {
-  documentNotFoundErrorHandler,
-  getUsersErrorHandlerSelector,
-  getUserByIdErrorHandlerSelector,
-  getCurrentUserErrorHandlerSelector,
-} = require('../errors/not-found-error');
-const {
-  catchFindErrorHandler,
-  catchFindByIdErrorHandler,
-  catchCreateErrorHandler,
-} = require('../errors/catch-errors');
-const {
-  userDataErrorHandlerSelector,
-} = require('../errors/invalid-data-passed-error');
-const { noAuthErrorHandler } = require('../errors/no-auth-error');
+const errors = require('../errors/errors');
 
 module.exports.getUsers = (req, res) => {
   User.find()
     .lean()
-    .orFail(() => {
-      documentNotFoundErrorHandler(getUsersErrorHandlerSelector);
-    })
     .then((data) => {
       res.status(200).send(data);
-    })
-    .catch((err) => {
-      catchFindErrorHandler(err, res);
     });
 };
 
 module.exports.getUserById = (req, res) => {
   User.findById(req.params.userId)
     .lean()
-    .orFail(() => documentNotFoundErrorHandler(getUserByIdErrorHandlerSelector))
-    .then((user) => res.status(200).send({ user }))
-    .catch((err) => {
-      catchFindByIdErrorHandler(err, res);
-    });
+    .orFail(() => {
+      next(errors.DocumentNotFoundError());
+    })
+    .then((user) => res.status(200).send({ user }));
 };
 
-module.exports.createUser = (req, res) => {
+module.exports.createUser = (req, res, next) => {
   const { name, email, password } = req.body;
   bcrypt.hash(password, 10).then((hash) => User.create({
     name,
@@ -55,25 +33,22 @@ module.exports.createUser = (req, res) => {
       .status(200)
       .send({ _id: user._id, name: user.name, email: user.email }))
     .catch((err) => {
-      catchCreateErrorHandler(err, res, userDataErrorHandlerSelector);
+      err.code === 11000 ? next(errors.UsedEmailError()) : next(err);
     }));
 };
 
-module.exports.getCurrentUser = (req, res) => {
+module.exports.getCurrentUser = (req, res, next) => {
   User.findById(req.user._id)
     .lean()
     .orFail(() => {
-      documentNotFoundErrorHandler(getCurrentUserErrorHandlerSelector);
+      next(errors.DocumentNotFoundError());
     })
     .then((user) => {
       res.status(200).send({ user });
-    })
-    .catch((err) => {
-      catchFindErrorHandler(err, res);
     });
 };
 
-module.exports.login = (req, res) => {
+module.exports.login = (req, res, next) => {
   const { email, password } = req.body;
 
   return User.findUserByCredentials(email, password)
@@ -87,7 +62,5 @@ module.exports.login = (req, res) => {
 
       res.send({ token });
     })
-    .catch(() => {
-      noAuthErrorHandler(res);
-    });
+    .catch(next);
 };

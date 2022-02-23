@@ -1,16 +1,16 @@
 const router = require('express').Router();
 const auth = require('../middleware/auth');
 const {
-  getArticles,
   createArticle,
   deleteArticleById,
+  getArticlesById,
 } = require('../controllers/articles');
 const {
   celebrateCreateArticle,
   celebrateDeleteArticleById,
 } = require('../middleware/celebrate');
 
-router.get('/', auth, getArticles);
+router.get('/', auth, getArticlesById);
 router.post('/', auth, celebrateCreateArticle, createArticle);
 router.delete(
   '/:articleId',

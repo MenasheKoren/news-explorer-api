@@ -6,12 +6,14 @@ const helmet = require('helmet');
 const mongoose = require('mongoose');
 const routes = require('./routes/index');
 const { requestLogger, errorLogger } = require('./middleware/logger');
-const { pageNotFoundErrorHandler } = require('./errors/not-found-error');
-const { defaultErrorHandler } = require('./errors/default-error');
+const errors = require('./errors/errors');
+const errorHandler = require('./errors/error-handler');
 const { limiter } = require('./middleware/rate-limiter');
 
+const { DB_ADDRESS } = process.env;
+
 const app = express();
-mongoose.connect('mongodb://localhost:27017/news');
+mongoose.connect(`${DB_ADDRESS}`);
 app.use(helmet());
 app.use(cors());
 app.options('*', cors());
@@ -23,7 +25,10 @@ app.use(limiter, routes);
 
 app.use(errorLogger);
 
-app.use('*', pageNotFoundErrorHandler);
-app.use(defaultErrorHandler);
+app.use('*', () => {
+  throw errors.PageNotFoundError();
+});
+
+app.use(errorHandler);
 
 module.exports = app;

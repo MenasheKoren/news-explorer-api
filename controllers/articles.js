@@ -1,31 +1,11 @@
 const Article = require('../models/article');
-const {
-  documentNotFoundErrorHandler,
-  getArticlesErrorHandlerSelector,
-  getArticleByIdErrorHandlerSelector,
-} = require('../errors/not-found-error');
-const {
-  articleDataErrorHandlerSelector,
-  deleteActionFailSelector,
-} = require('../errors/invalid-data-passed-error');
+const errors = require('../errors/errors');
 
-const {
-  catchFindErrorHandler,
-  catchCreateErrorHandler,
-  catchFindByIdAndUpdateOrDeleteErrorHandler,
-} = require('../errors/catch-errors');
-
-module.exports.getArticles = (req, res) => {
-  Article.find()
+module.exports.getArticlesById = (req, res) => {
+  Article.find({ owner: req.user._id })
     .lean()
-    .orFail(() => {
-      documentNotFoundErrorHandler(getArticlesErrorHandlerSelector);
-    })
     .then((data) => {
       res.status(200).send(data);
-    })
-    .catch((err) => {
-      catchFindErrorHandler(err, res);
     });
 };
 
@@ -42,26 +22,22 @@ module.exports.createArticle = (req, res) => {
     link,
     image,
     owner: req.user._id,
-  })
-    .then((article) => res.status(200).send({ article }))
-    .catch((err) => {
-      catchCreateErrorHandler(err, res, articleDataErrorHandlerSelector);
-    });
+  }).then((article) => res.status(200).send({ article }));
 };
 
-module.exports.deleteArticleById = (req, res) => {
-  Article.findByIdAndDelete(req.params.articleId)
-    .populate('owner')
+module.exports.deleteArticleById = (req, res, next) => {
+  Article.findById(req.params.articleId)
+    .select('+owner')
     .orFail(() => {
-      documentNotFoundErrorHandler(getArticleByIdErrorHandlerSelector);
+      throw errors.DocumentNotFoundError();
     })
-    .then((article) => res.status(200).send({ article }))
-    .catch((err) => {
-      catchFindByIdAndUpdateOrDeleteErrorHandler(
-        err,
-        res,
-        articleDataErrorHandlerSelector,
-        deleteActionFailSelector,
-      );
-    });
+    .then((article) => {
+      if (article.owner.valueOf() !== req.user._id) throw errors.InvalidOwner();
+      Article.findByIdAndDelete(req.params.articleId)
+        .orFail(() => {
+          throw errors.DocumentNotFoundError();
+        })
+        .then(() => res.status(200).send({ article }));
+    })
+    .catch(next);
 };
