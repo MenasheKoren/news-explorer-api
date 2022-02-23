@@ -10,8 +10,10 @@ const { pageNotFoundErrorHandler } = require('./errors/not-found-error');
 const { defaultErrorHandler } = require('./errors/default-error');
 const { limiter } = require('./middleware/rate-limiter');
 
+const { DB_ADDRESS } = process.env;
+
 const app = express();
-mongoose.connect(process.env.DB_ADDRESS);
+mongoose.connect(`${DB_ADDRESS}`);
 app.use(helmet());
 app.use(cors());
 app.options('*', cors());
