@@ -13,7 +13,7 @@ const userSchema = new mongoose.Schema({
   },
   email: {
     type: String,
-    unique: true,
+    unique: [true, 'This email has already been used'],
     required: true,
     validate: {
       validator: (v) => validator.isEmail(v),

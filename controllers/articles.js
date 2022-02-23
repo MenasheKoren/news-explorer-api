@@ -46,7 +46,7 @@ module.exports.createArticle = (req, res) => {
 };
 
 module.exports.deleteArticleById = (req, res) => {
-  Article.findByIdAndDelete(req.params.articleId)
+  Article.findByIdAndDelete(req.params.articleId, { owner: req.user._id })
     .populate('owner')
     .orFail(() => {
       documentNotFoundErrorHandler(getArticleByIdErrorHandlerSelector);

@@ -4,6 +4,7 @@ const { defaultErrorHandler } = require('./default-error');
 const {
   invalidDataPassedErrorHandler,
   createActionFailSelector,
+  emailDataErrorHandlerSelector,
 } = require('./invalid-data-passed-error');
 
 module.exports.catchFindErrorHandler = (err, res) => {
@@ -38,6 +39,10 @@ module.exports.catchCreateErrorHandler = (err, res, dataFailSelector) => {
       res,
       err,
     );
+  } else if (err.name === 'MongoServerError' && err.code === 11000) {
+    res.status(409).send({
+      message: `${emailDataErrorHandlerSelector} is already being used`,
+    });
   } else if (err.name === 'CastError') {
     castErrorHandler(res, err);
   } else {
@@ -62,18 +67,6 @@ module.exports.catchFindByIdAndUpdateOrDeleteErrorHandler = (
       res,
       err,
     );
-  } else if (err.name === 'CastError') {
-    castErrorHandler(res, err);
-  } else {
-    defaultErrorHandler(err, '', res);
-  }
-};
-
-module.exports.catchUsedEmail = (err, res, dataFailSelector) => {
-  if (err.name === 'MongoServerError' && err.code === 11000) {
-    res.status(409).send({
-      message: `This ${dataFailSelector} is already used`,
-    });
   } else if (err.name === 'CastError') {
     castErrorHandler(res, err);
   } else {
