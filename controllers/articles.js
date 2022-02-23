@@ -1,7 +1,6 @@
 const Article = require('../models/article');
 const {
   documentNotFoundErrorHandler,
-  getArticlesErrorHandlerSelector,
   getArticleByIdErrorHandlerSelector,
 } = require('../errors/not-found-error');
 const {
@@ -15,12 +14,9 @@ const {
   catchFindByIdAndUpdateOrDeleteErrorHandler,
 } = require('../errors/catch-errors');
 
-module.exports.getArticles = (req, res) => {
-  Article.find()
+module.exports.getArticlesById = (req, res) => {
+  Article.find({ owner: req.user._id })
     .lean()
-    .orFail(() => {
-      documentNotFoundErrorHandler(getArticlesErrorHandlerSelector);
-    })
     .then((data) => {
       res.status(200).send(data);
     })
