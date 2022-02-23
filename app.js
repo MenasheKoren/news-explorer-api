@@ -11,7 +11,7 @@ const { defaultErrorHandler } = require('./errors/default-error');
 const { limiter } = require('./middleware/rate-limiter');
 
 const app = express();
-mongoose.connect('mongodb://localhost:27017/news');
+mongoose.connect(process.env.DB_ADDRESS);
 app.use(helmet());
 app.use(cors());
 app.options('*', cors());
